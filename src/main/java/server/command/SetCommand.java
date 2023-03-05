@@ -5,18 +5,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import java.util.WeakHashMap;
+import org.apache.commons.lang3.tuple.Pair;
 import server.Command;
 
-@AllArgsConstructor(staticName = "newInstance")
 public class SetCommand extends Command<JsonObject> {
-    private JsonObject currentDatabaseJson;
-    private List<String> keyList;
-    private JsonElement valueJson;
-    private String value;
+    private final List<String> keyList;
+    private final JsonElement valueJson;
+    private final String value;
+    private final Map<JsonObject, Pair<String, JsonElement>> affectedKeyObjects = new WeakHashMap<>();
+
+    public SetCommand(JsonObject currentDatabaseJson, List<String> keyList, JsonElement valueJson, String value) {
+        super(currentDatabaseJson);
+        this.keyList = keyList;
+        this.valueJson = valueJson;
+        this.value = value;
+    }
 
     @Override
     public JsonObject execute()  {
@@ -30,13 +37,7 @@ public class SetCommand extends Command<JsonObject> {
             String key = keyQueue.poll();
             if (!keyObject.has(key)) {
                 if (keyQueue.isEmpty()) {
-                    if (!Objects.isNull(valueJson)) {
-                        keyObject.add(key, valueJson);
-                    } else {
-                        keyObject.addProperty(key, value);
-                    }
-                    this.setResult(currentDatabaseJson);
-                    return currentDatabaseJson;
+                    return addToIndentedKeyObject(keyObject, key);
                 } else {
                     throw new IllegalArgumentException("Does not have key");
                 }
@@ -44,33 +45,45 @@ public class SetCommand extends Command<JsonObject> {
             JsonElement keyElement = keyObject.get(key);
             if (keyElement.isJsonObject()) {
                 if (keyQueue.isEmpty()) {
-                    if (!Objects.isNull(valueJson)) {
-                        keyObject.add(key, valueJson);
-                    } else {
-                        keyObject.addProperty(key, value);
-                    }
-                    this.setResult(currentDatabaseJson);
-                    return currentDatabaseJson;
+                    return addToIndentedKeyObject(keyObject, key);
                 }
                 keyObject = keyObject.getAsJsonObject(key);
             } else if (keyElement.isJsonArray()) {
                 JsonArray keyArray = keyElement.getAsJsonArray();
                 if (!Objects.isNull(valueJson)) {
+                    addToAffectedKeyObjectMap(key, keyObject);
                     keyArray.add(valueJson);
                 } else {
+                    addToAffectedKeyObjectMap(key, keyObject);
                     keyArray.add(value);
                 }
                 this.setResult(currentDatabaseJson);
                 return currentDatabaseJson;
             } else if (keyElement.isJsonNull() || keyElement.isJsonPrimitive()) {
-                if (!Objects.isNull(valueJson)) {
-                    keyObject.add(key, valueJson);
-                } else {
-                    keyObject.addProperty(key, value);
-                }
-                this.setResult(currentDatabaseJson);
-                return currentDatabaseJson;
+                return addToIndentedKeyObject(keyObject, key);
             }
+        }
+        this.setResult(currentDatabaseJson);
+        return currentDatabaseJson;
+    }
+
+    private void addToAffectedKeyObjectMap(String key, JsonObject keyObject) {
+        affectedKeyObjects.put(
+                keyObject,
+                Pair.of(
+                        key,
+                        keyObject.has(key) ? keyObject.get(key) : null
+                )
+        );
+    }
+
+    private JsonObject addToIndentedKeyObject(JsonObject keyObject, String key) {
+        if (!Objects.isNull(valueJson)) {
+            addToAffectedKeyObjectMap(key, keyObject);
+            keyObject.add(key, valueJson);
+        } else {
+            addToAffectedKeyObjectMap(key, keyObject);
+            keyObject.addProperty(key, value);
         }
         this.setResult(currentDatabaseJson);
         return currentDatabaseJson;

@@ -5,13 +5,15 @@ import com.google.gson.JsonObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import lombok.RequiredArgsConstructor;
 import server.Command;
 
-@RequiredArgsConstructor(staticName = "newInstance")
 public class GetCommand extends Command<JsonElement> {
-    private final JsonObject currentDatabaseJson;
     private final List<String> keyList;
+
+    public GetCommand(JsonObject currentDatabaseJson, List<String> keyList) {
+        super(currentDatabaseJson);
+        this.keyList = keyList;
+    }
 
     @Override
     public JsonElement execute() {

@@ -10,6 +10,10 @@ public abstract class Command<T> {
     @Getter
     protected JsonObject currentDatabaseJson;
 
+    protected Command(JsonObject currentDatabaseJson) {
+        this.currentDatabaseJson = currentDatabaseJson;
+    }
+
     protected abstract T execute();
     protected abstract void print();
     protected void rollback() {

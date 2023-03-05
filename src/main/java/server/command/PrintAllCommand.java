@@ -1,12 +1,12 @@
 package server.command;
 
 import com.google.gson.JsonObject;
-import lombok.RequiredArgsConstructor;
 import server.Command;
 
-@RequiredArgsConstructor(staticName = "newInstance")
 public class PrintAllCommand<K, V> extends Command<Void> {
-    private final JsonObject currentDatabaseJson;
+    protected PrintAllCommand(JsonObject currentDatabaseJson) {
+        super(currentDatabaseJson);
+    }
 
     @Override
     public Void execute() {

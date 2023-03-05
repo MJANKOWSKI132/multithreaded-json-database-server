@@ -95,7 +95,7 @@ public class Main {
                         keyList = Collections.singletonList(keyListElement.getAsString());
                     }
 
-                    GetCommand getCommand = GetCommand.newInstance(currentDatabaseJson, keyList);
+                    GetCommand getCommand = new GetCommand(currentDatabaseJson, keyList);
                     controller.executeCommand(getCommand);
                     JsonElement result = getCommand.getResult();
                     if (result.isJsonPrimitive()) {
@@ -130,7 +130,7 @@ public class Main {
                         keyList = Collections.singletonList(keyListElement.getAsString());
                     }
                     
-                    SetCommand setCommand = SetCommand.newInstance(currentDatabaseJson, keyList, valueAsJson, value);
+                    SetCommand setCommand = new SetCommand(currentDatabaseJson, keyList, valueAsJson, value);
                     controller.executeCommand(setCommand);
                     output.writeUTF(regularGson.toJson(ResponseDto.ok(Optional.empty())));
                     writeJsonObjectToFile(setCommand.getResult());
@@ -149,7 +149,7 @@ public class Main {
                         keyList = Collections.singletonList(keyListElement.getAsString());
                     }
 
-                    DeleteCommand deleteCommand = DeleteCommand.newInstance(currentDatabaseJson, keyList);
+                    DeleteCommand deleteCommand = new DeleteCommand(currentDatabaseJson, keyList);
                     controller.executeCommand(deleteCommand);
                     output.writeUTF(regularGson.toJson(ResponseDto.ok(Optional.empty())));
                     writeJsonObjectToFile(currentDatabaseJson);
