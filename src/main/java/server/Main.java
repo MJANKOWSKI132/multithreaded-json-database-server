@@ -23,10 +23,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import lombok.extern.slf4j.Slf4j;
 import server.command.DeleteCommand;
 import server.command.GetCommand;
 import server.command.SetCommand;
 
+@Slf4j
 public class Main {
     private static final int PORT = 34522;
     private static final Path dirPath = Path.of(System.getProperty("user.dir") + "/src/server/data/");
@@ -58,7 +60,7 @@ public class Main {
             return;
         }
         try (ServerSocket server = new ServerSocket(PORT)) {
-            System.out.println("Server started!");
+            log.info("Server started!");
             while (true) {
                 Socket socket = server.accept();
                 CompletableFuture.runAsync(() -> {

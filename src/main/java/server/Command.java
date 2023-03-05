@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public abstract class Command<T> {
     @Getter @Setter
-    protected T result;
+    protected T result = null;
     @Getter
     protected JsonObject currentDatabaseJson;
 

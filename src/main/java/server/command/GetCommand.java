@@ -4,9 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
+import lombok.extern.slf4j.Slf4j;
 import server.Command;
 
+@Slf4j
 public class GetCommand extends Command<JsonElement> {
     private final List<String> keyList;
 
@@ -41,6 +44,10 @@ public class GetCommand extends Command<JsonElement> {
 
     @Override
     public void print() {
-
+        if (Objects.nonNull(this.result)) {
+            log.info("Successfully retrieved the value at: {}", String.join(".", keyList));
+        } else {
+            log.error("Unsuccessfully retrieved the value at: {}", String.join(".", keyList));
+        }
     }
 }

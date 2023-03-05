@@ -13,7 +13,9 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Main {
     private static final int PORT = 34522;
     private static final String SERVER_ADDRESS = "127.0.0.1";
@@ -43,7 +45,7 @@ public class Main {
             DataInputStream input = new DataInputStream(socket.getInputStream());
             DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
-            System.out.println("Client started!");
+            log.info("Client started!");
 
             Gson gson = new Gson();
 
@@ -63,10 +65,10 @@ public class Main {
             String outgoingMessage = gson.toJson(outgoingCommand);
 
             output.writeUTF(outgoingMessage);
-            System.out.printf("Sent: %s%n", outgoingMessage);
+            log.info("Sent: {}", outgoingMessage);
 
             String receivedMessage = input.readUTF();
-            System.out.printf("Received: %s%n", receivedMessage);
+            log.info("Received: {}", receivedMessage);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

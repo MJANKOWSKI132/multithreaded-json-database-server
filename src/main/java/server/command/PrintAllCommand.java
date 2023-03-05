@@ -1,8 +1,10 @@
 package server.command;
 
 import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import server.Command;
 
+@Slf4j
 public class PrintAllCommand<K, V> extends Command<Void> {
     protected PrintAllCommand(JsonObject currentDatabaseJson) {
         super(currentDatabaseJson);
@@ -15,6 +17,6 @@ public class PrintAllCommand<K, V> extends Command<Void> {
 
     @Override
     public void print() {
-        System.out.printf("Printed all items in the map");
+        log.info("Printed all commands in the command history");
     }
 }

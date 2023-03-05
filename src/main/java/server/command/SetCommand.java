@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.WeakHashMap;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import server.Command;
 
+@Slf4j
 public class SetCommand extends Command<JsonObject> {
     private final List<String> keyList;
     private final JsonElement valueJson;
@@ -91,7 +93,13 @@ public class SetCommand extends Command<JsonObject> {
 
     @Override
     public void print() {
-
+        String valueSet = Objects.nonNull(value) ? value : valueJson.toString();
+        String key = String.join(".", valueSet);
+        if (Objects.nonNull(this.result)) {
+            log.info("Successfully set the value at: {} to {}", key, valueSet);
+        } else {
+            log.error("Unsuccessfully set the value at: {} to {}", key, valueSet);
+        }
     }
 
     @Override
