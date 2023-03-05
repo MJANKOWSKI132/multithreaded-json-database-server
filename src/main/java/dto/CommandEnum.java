@@ -5,5 +5,6 @@ public enum CommandEnum {
     SET,
     DELETE,
     EXIT,
+    ROLLBACK,
     INPUT_FILE
 }

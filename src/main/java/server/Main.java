@@ -155,6 +155,17 @@ public class Main {
                     writeJsonObjectToFile(currentDatabaseJson);
                     break;
                 }
+                case ROLLBACK:
+                    Optional<Command<?>> optionalLastCommand = controller.rollbackLastCommand();
+                    if (optionalLastCommand.isEmpty()) {
+                        output.writeUTF(regularGson.toJson(ResponseDto.error("No commands have been executed thus far")));
+                        break;
+                    }
+                    // TODO: update response
+                    output.writeUTF(regularGson.toJson(ResponseDto.ok(Optional.empty())));
+                    Command<?> lastCommand = optionalLastCommand.get();
+                    // For garbage collection
+                    lastCommand = null;
                 case EXIT:
                     output.writeUTF(regularGson.toJson(ResponseDto.ok(Optional.empty())));
                     server.close();
