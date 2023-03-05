@@ -93,4 +93,17 @@ public class SetCommand extends Command<JsonObject> {
     public void print() {
 
     }
+
+    @Override
+    protected void rollback() {
+        affectedKeyObjects.forEach((keyObject, pair) -> {
+            String key = pair.getKey();
+            JsonElement element = pair.getValue();
+            if (Objects.isNull(element)) {
+                keyObject.remove(key);
+            } else {
+                keyObject.add(key, element);
+            }
+        });
+    }
 }
