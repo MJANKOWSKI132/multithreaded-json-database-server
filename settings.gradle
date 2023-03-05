@@ -1,0 +1,3 @@
+rootProject.name = 'multithreaded-json-database'
+include 'user-details-proto'
+

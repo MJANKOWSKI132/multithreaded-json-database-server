@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'com.multithreaded.server'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.opencsv:opencsv:5.7.1'
+
+    implementation "com.beust:jcommander:1.78"
+    implementation 'com.google.code.gson:gson:2.8.8'
+}
+
+test {
+    useJUnitPlatform()
+}
